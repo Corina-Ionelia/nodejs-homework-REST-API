@@ -1,5 +1,19 @@
-const app = require("./app");
+// server.js
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const authRoutes = require('./routes/auth');
 
-app.listen(3000, () => {
-  console.log("Server is running. Use our API on port: 3000");
-});
+const app = express();
+
+app.use(express.json());
+app.use('/users', authRoutes);
+
+mongoose
+    .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        app.listen(process.env.PORT, () => {
+            console.log(`Server running on http://localhost:${process.env.PORT}`);
+        });
+    })
+    .catch((err) => console.error(err));
